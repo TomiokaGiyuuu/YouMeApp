@@ -2,7 +2,8 @@ import express from 'express'
 import multer from 'multer'
 import mongoose from "mongoose";
 import cors from 'cors'
-require('dotenv').config()
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js'
 import {UserController, PostController, CommentController} from "./controllers/index.js";
@@ -41,7 +42,7 @@ app.get('/tags', PostController.getLastTags)
 app.get('/posts', PostController.getAll)
 app.get('/posts/tags', PostController.getLastTags)
 app.get('/posts/:id', PostController.getOne)
-app.post('/posts',checkAuth, postCreateValidation, handleValidationErrors, PostController.create)
+app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create)
 app.delete('/posts/:id', checkAuth, PostController.remove)
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update)
 

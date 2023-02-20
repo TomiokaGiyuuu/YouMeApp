@@ -6,10 +6,15 @@ import { Post } from "../components/Post";
 import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
+import {useSelector} from "react-redux";
+import {selectIsAuth} from "../redux/slices/auth";
 
 export const FullPost = () => {
     const [data, setData] = React.useState()
     const [isLoading, setIsLoading] = React.useState(true)
+    const [commentData, setCommentData] = React.useState()
+    const [isCommentLoading, setIsCommentLoading] = React.useState(true)
+    const isAuth = useSelector(selectIsAuth)
 
     const {id} = useParams()
 
@@ -22,6 +27,19 @@ export const FullPost = () => {
             .catch((err) => {
                 console.warn(err)
                 alert('Error when retrieving the post')
+            })
+    }, [])
+
+
+    React.useEffect(() => {
+        axios.get(`/comments/${id}`)
+            .then(res => {
+                setCommentData(res.data)
+                setIsCommentLoading(false)
+            })
+            .catch((err) => {
+                console.warn(err)
+                alert('Error when retrieving comments')
             })
     }, [])
 
@@ -44,27 +62,11 @@ export const FullPost = () => {
           <ReactMarkdown children={data.text} />
       </Post>
       <CommentsBlock
-        items={
-          [
-              {
-                user: {
-                  fullName: "Вася Пупкин",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                },
-                text: "Это тестовый комментарий 555555",
-              },
-              {
-                user: {
-                  fullName: "Иван Иванов",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-              },
-          ]
-      }
-        isLoading={false}
+        items={commentData}
+        isLoading={isCommentLoading}
       >
-        <Index />
+          <Index/>
+
       </CommentsBlock>
     </>
   );

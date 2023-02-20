@@ -12,6 +12,7 @@ import { CommentsBlock } from '../components/CommentsBlock';
 import {fetchPosts, fetchTags} from "../redux/slices/posts";
 import {fetchAuthMe} from "../redux/slices/auth";
 import {fetchComments} from "../redux/slices/comments";
+import axios from "../axios";
 
 export const Home = () => {
 
@@ -19,6 +20,9 @@ export const Home = () => {
     const userData = useSelector(state => state.auth.data)
     const {posts, tags, comments} = useSelector(state => state.posts)
     // console.log(userData.userData)
+
+    const [data, setData] = React.useState()
+    const [isLoading, setIsLoading] = React.useState(true)
 
     const isPostsLoading = posts.status === 'loading'
     const isTagsLoading = tags.status === 'loading'
@@ -29,6 +33,18 @@ export const Home = () => {
         dispatch((fetchTags()))
         dispatch((fetchComments()))
     },[])
+
+    React.useEffect(() => {
+        axios.get(`/comments`)
+            .then(res => {
+                setData(res.data)
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                console.warn(err)
+                alert('Error when retrieving the post')
+            })
+    }, [])
 
 
   return (
@@ -54,7 +70,7 @@ export const Home = () => {
                       viewsCount={obj.viewsCount}
                       commentsCount={3}
                       tags={obj.tags}
-                      isEditable={userData?.userData._id === obj.user._id}
+                      isEditable={userData?._id === obj.user._id}
                   />
               ),
           )}
@@ -62,25 +78,8 @@ export const Home = () => {
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
-            items={
-              [
-              {
-                user: {
-                  fullName: 'Вася',
-                  avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-                },
-                text: 'Это тестовый комментарий',
-              },
-              {
-                user: {
-                  fullName: 'Иван Иванов',
-                  avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-                },
-                text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-              },
-            ]
-          }
-            isLoading={false}
+            items={data}
+            isLoading={isLoading}
           />
         </Grid>
       </Grid>
