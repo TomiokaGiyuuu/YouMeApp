@@ -47,6 +47,41 @@ export const getPostComments = async (req, res) => {
     }
 }
 
+export const getPostCommentsCount = async (req, res) => {
+    try{
+        const postId = req.params.id
+
+        CommentModel.find({
+                postId: postId
+            },
+            {}, {},
+            (err, doc) => {
+                if(err) {
+                    console.log(err)
+                    return res.status(500).json({
+                        message: "Can't return comments"
+                    })
+                }
+
+                if(!doc) {
+                    return res.status(404).json({
+                        message: "Comments not found"
+                    })
+                }
+
+                res.json(doc)
+            }
+
+        ).populate('user').count()
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({
+            message: "Can't get comments"
+        })
+    }
+}
+
 export const remove = async (req, res) => {
     try{
         const commentId = req.params.id
