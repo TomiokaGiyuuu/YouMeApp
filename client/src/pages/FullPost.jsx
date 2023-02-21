@@ -14,7 +14,6 @@ export const FullPost = () => {
     const [isLoading, setIsLoading] = React.useState(true)
     const [commentData, setCommentData] = React.useState()
     const [isCommentLoading, setIsCommentLoading] = React.useState(true)
-    const isAuth = useSelector(selectIsAuth)
 
     const {id} = useParams()
 

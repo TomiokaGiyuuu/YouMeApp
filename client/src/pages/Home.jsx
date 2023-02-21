@@ -23,10 +23,14 @@ export const Home = () => {
 
     const [data, setData] = React.useState()
     const [isLoading, setIsLoading] = React.useState(true)
+    const [commentCount, setCommentCount] = React.useState()
+
 
     const isPostsLoading = posts.status === 'loading'
     const isTagsLoading = tags.status === 'loading'
     // const isCommentsLoading = comments.status === 'loading'
+
+    let commentsCount = new Map()
 
     React.useEffect(() => {
         dispatch(fetchPosts())
@@ -45,7 +49,6 @@ export const Home = () => {
                 alert('Error when retrieving the post')
             })
     }, [])
-
 
   return (
     <>
@@ -68,7 +71,7 @@ export const Home = () => {
                       user={obj.user}
                       createdAt={obj.createdAt}
                       viewsCount={obj.viewsCount}
-                      commentsCount={3}
+                      commentsCount={obj._id}
                       tags={obj.tags}
                       isEditable={userData?._id === obj.user._id}
                   />

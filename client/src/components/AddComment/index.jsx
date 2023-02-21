@@ -15,17 +15,11 @@ export const Index = () => {
     const {id} = useParams()
     const navigate = useNavigate()
     const isAuth = useSelector(selectIsAuth)
-    console.log(isAuth)
-
 
     const [isLoading, setIsLoading] = React.useState(false);
     const [text, setText] = React.useState('');
     const [postId, setPostId] = React.useState('');
     const [user, setUser] = React.useState('');
-
-    const onChange = React.useCallback((value) => {
-        setText(value);
-    }, []);
 
     const onSubmit = async () => {
         try {
@@ -40,8 +34,9 @@ export const Index = () => {
             }
 
             await axios.post(`/comments/${id}`, fields)
-
             navigate(`/posts/${id}`)
+            const refresh = () => window.location.reload(true)
+            refresh()
 
         }catch (err){
             console.warn(err)
